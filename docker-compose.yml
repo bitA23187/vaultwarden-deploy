@@ -1,0 +1,48 @@
+services:
+  vaultwarden:
+    image: ${VAULTWARDEN_IMAGE:?Set VAULTWARDEN_IMAGE to a pinned digest reference (e.g. ghcr.io/dani-garcia/vaultwarden@sha256:...)}
+    container_name: vaultwarden
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    env_file: .env
+    networks:
+      - vw_internal
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/alive"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: ${NGINX_IMAGE:?Set NGINX_IMAGE to a pinned digest reference (e.g. nginx@sha256:...)}
+    container_name: vaultwarden_nginx
+    restart: unless-stopped
+    ports:
+      - "8443:8443"
+    volumes:
+      - ./nginx/vaultwarden.conf:/etc/nginx/conf.d/vaultwarden.conf:ro
+      - ./nginx/admin-location.inc:/etc/nginx/conf.d/_admin-location.inc:ro
+      - ./certs:/etc/nginx/certs:ro
+      - ./logs:/var/log/nginx
+    depends_on:
+      - vaultwarden
+    networks:
+      - vw_internal
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+
+networks:
+  vw_internal:
+    driver: bridge
+    internal: false

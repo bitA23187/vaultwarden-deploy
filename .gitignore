@@ -1,0 +1,12 @@
+.env
+!.env.example
+rclone.conf
+
+# Runtime data
+backups/
+certs/
+data/
+logs/
+
+# Local notes
+.claude/
