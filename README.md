@@ -11,7 +11,7 @@
 把这个仓库 clone 到本地，然后告诉 Claude Code 你的服务器信息，让它参考这些配置帮你部署：
 
 ```
-git clone https://github.com/<YOUR_USERNAME>/vaultwarden-deploy.git
+git clone https://github.com/bitA23187/vaultwarden-deploy.git
 cd vaultwarden-deploy
 claude   # 启动 Claude Code，告诉它你想部署 Vaultwarden
 ```
